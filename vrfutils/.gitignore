@@ -54,6 +54,8 @@ docs/_build/
 
 *.iml
 *.txt
+*.html
+*.pdf
 
 *COMMIT_MSG
 
