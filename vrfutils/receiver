@@ -1,0 +1,50 @@
+set routing-instances internet instance-type vrf
+set routing-instances internet route-distinguisher 881:2
+set routing-instances internet vrf-import ip1-in-default
+set routing-instances internet vrf-export ip1-out
+set routing-instances internet vrf-table-label
+set routing-instances internet routing-options auto-export
+
+set policy-options policy-statement ip1-in-default term ip1 from community target:881:881
+set policy-options policy-statement ip1-in-default term ip1 then preference subtract 168
+set policy-options policy-statement ip1-in-default term ip1 then accept
+
+set policy-options policy-statement ip1-in-default term ip99 from community target:2424:3535
+set policy-options policy-statement ip1-in-default term ip99 then preference subtract 344
+set policy-options policy-statement ip1-in-default term ip99 then accept
+
+set policy-options policy-statement ip1-in-default term ip100 from community target:789:344
+set policy-options policy-statement ip1-in-default term ip100 then preference subtract 167
+set policy-options policy-statement ip1-in-default term ip100 then accept
+
+
+set routing-instances data instance-type vrf
+set routing-instances data route-distinguisher 771:4
+set routing-instances data vrf-import data-in-default
+set routing-instances data vrf-export data-out
+set routing-instances data vrf-table-label2
+set routing-instances data routing-options auto-export
+
+
+set policy-options policy-statement data-in-default term ip748 from community target:992:992
+set policy-options policy-statement data-in-default term ip748 then preference subtract 511
+set policy-options policy-statement data-in-default term ip748 then accept
+
+set policy-options policy-statement data-in-default term xd580 from community target:178:*
+set policy-options policy-statement data-in-default term xd580 then accept
+
+
+set policy-options policy-statement data-in-default term other then reject
+
+
+set routing-instances boxit instance-type vrf
+set routing-instances boxit route-distinguisher 1271:5
+set routing-instances boxit vrf-import boxit-in-default
+set routing-instances boxit vrf-export boxit-out
+set routing-instances boxit vrf-target target:8000:8000
+set routing-instances boxit vrf-table-label17
+set routing-instances boxit routing-options auto-export
+
+set policy-options policy-statement boxit-in-default term ip100 from community target:8866:1000
+set policy-options policy-statement boxit-in-default term ip100 then preference subtract 3367
+set policy-options policy-statement boxit-in-default term ip100 then accept

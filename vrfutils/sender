@@ -1,0 +1,105 @@
+set logical-systems r1-ran-agg-lab routing-instances iub instance-type vrf
+set logical-systems r1-ran-agg-lab routing-instances iub vrf-import iub-import
+set logical-systems r1-ran-agg-lab routing-instances iub vrf-export iub-export
+set logical-systems r1-ran-agg-lab routing-instances iub vrf-table-label
+set logical-systems r1-ran-agg-lab routing-instances iub protocols bgp group s1-r1-mpbn neighbor 172.20.249.177 description r1.mpbn.lab-vrf-s1
+set logical-systems r1-ran-agg-lab routing-instances iub protocols bgp group iub-fw1 neighbor 172.20.180.250 description fw1.ran.lab-vrf-iub
+set logical-systems r1-ran-agg-lab routing-instances iub protocols bgp group iub-npe neighbor 172.20.249.162 description r1.npe.lab-vrf-iub-3g
+set logical-systems r1-ran-agg-lab routing-instances oam instance-type vrf
+set logical-systems r1-ran-agg-lab routing-instances oam vrf-target target:8000:8000
+set logical-systems r1-ran-agg-lab routing-instances oam vrf-table-label
+set logical-systems r1-ran-agg-lab routing-instances oam protocols bgp group oam type internal
+set logical-systems r1-ran-agg-lab routing-instances oam protocols bgp group oam neighbor 172.20.178.26 description r1-run-agg-lab-vrf-iub
+set logical-systems r1-ran-agg-lab routing-instances s1 instance-type vrf
+set logical-systems r1-ran-agg-lab routing-instances s1 vrf-import s1-import
+set logical-systems r1-ran-agg-lab routing-instances s1 vrf-export s1-export
+set logical-systems r1-ran-agg-lab routing-instances s1 vrf-table-label
+
+set routing-instances Voice instance-type vrf
+set routing-instances Voice route-distinguisher 881:1
+set routing-instances Voice vrf-import ip1-in-default
+set routing-instances Voice vrf-export ip1-out
+set routing-instances Voice vrf-table-label
+set routing-instances Voice routing-options static route 0.0.0.0/0 next-hop 11.11.11.2
+set routing-instances Voice routing-options static route 0.0.0.0/0 preference 2
+set routing-instances Voice routing-options auto-export
+
+set policy-options policy-statement ip1-out then community add target:881:*
+set policy-options policy-statement ip1-out then accept
+set policy-options policy-statement ip1-out then community add target:407:999
+set policy-options policy-statement ip1-out then reject
+set policy-options policy-statement ip1-out then community add target:123:456
+set policy-options policy-statement ip1-out then reject
+set policy-options policy-statement ip1-out then community add target:789:344
+set policy-options policy-statement ip1-out then accept
+
+set routing-instances ip1 instance-type vrf
+set routing-instances ip1 vrf-export ip2-out
+set routing-instances ip1 routing-options static route 10.0.0.0/0 next-hop 12.12.12.2
+set routing-instances ip1 routing-options static route 10.0.0.0/0 preference 1
+set routing-instances ip1 routing-options auto-export
+set policy-options policy-statement ip2-out then community add target:992:992
+set policy-options policy-statement ip2-out then accept
+set policy-options policy-statement ip2-out then community add target:712:582
+set policy-options policy-statement ip2-out then reject
+
+
+set routing-instances extranet instance-type vrf
+set routing-instances extranet vrf-export extranet-out3
+set routing-instances extranet routing-options static route 10.0.0.0/0 next-hop 12.12.12.2
+set routing-instances extranet routing-options static route 10.0.0.0/0 preference 1
+set routing-instances extranet routing-options auto-export
+set policy-options policy-statement extranet-out3 then community add target:2424:*
+set policy-options policy-statement extranet-out3 then accept
+set policy-options policy-statement extranet-out3 then community add target:4848:9393
+set policy-options policy-statement extranet-out3 then reject
+set policy-options policy-statement extranet-out3 then community add target:*:774
+set policy-options policy-statement extranet-out3 then accept
+
+set routing-instances extranet vrf-target target:8000:8000
+
+set groups sub50-test routing-instances VPN-A instance-type vrf
+set groups another-group routing-instances VPN-A instance-type vrf
+set groups grp1 grp2 grp3 routing-instances VPN-A instance-type vrf
+
+set apply-groups sub50-test mygrp435 grp3
+set apply-groups grp2
+
+set policy-options policy-statement 012_BEZEQ_IMPORT term 1 from protocol bgp
+set policy-options policy-statement 012_BEZEQ_IMPORT term 1 then community set 012_redbacks
+set policy-options policy-statement 012_BEZEQ_IMPORT term 1 then accept
+set policy-options community 012_redbacks members 6810:12400
+
+set logical-systems 012_PE routing-instances TEST_VRF instance-type vrf
+set logical-systems interAs-clientSide routing-instances Client1 instance-type vrf
+set logical-systems r1-ran-agg-lab routing-instances iub instance-type vrf
+set logical-systems r1-ran-agg-lab routing-instances oam instance-type vrf
+set logical-systems r1-ran-agg-lab routing-instances s1 instance-type vrf
+
+set groups 10htest policy-options policy-statement VPN-Y-Export term Export-Static from protocol static
+set groups 10htest policy-options policy-statement VPN-Y-Export term Export-Static from route-filter 0.0.0.0/0 exact
+set groups 10htest policy-options policy-statement VPN-Y-Export term Export-Static then community add VPN-Y
+set groups 10htest policy-options policy-statement VPN-Y-Export term Export-Static then accept
+
+set groups 10htest policy-options community VPN-Y members target:8866:1240 target:6977:1215
+set groups 10htest routing-instances VPN-Y instance-type vrf
+set groups 10htest routing-instances VPN-Y interface lo0.111
+set groups 10htest routing-instances VPN-Y route-distinguisher 212.39.94.47:117
+set groups 10htest routing-instances VPN-Y vrf-export VPN-Y-Export
+set groups 10htest routing-instances VPN-Y vrf-target import target:8866:1240
+set groups 10htest routing-instances VPN-Y vrf-table-label
+set groups 10htest routing-instances VPN-A instance-type vrf
+set groups 10htest routing-instances VPN-A interface lo0.222
+set groups 10htest routing-instances VPN-A route-distinguisher 212.39.94.112:100
+set groups 10htest routing-instances VPN-A vrf-target target:8866:1000
+set groups 10htest routing-instances VPN-A vrf-table-label
+
+set routing-instances dp instance-type vrf
+set routing-instances dp route-distinguisher 65535:34532
+set routing-instances dp vrf-target target:65535:34600
+set routing-instances dp vrf-table-label
+set routing-instances dp vrf-target import target:7111:9006
+set routing-instances dp routing-options auto-export
+
+set apply-groups 10htest
+

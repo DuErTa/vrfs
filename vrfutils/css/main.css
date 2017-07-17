@@ -1,0 +1,31 @@
+body { 
+  background-color: linen; 
+}
+
+table, td, th { 
+  border: 1px solid black;
+}
+
+.Leak {
+  background-color: red;
+  color: white;
+}
+
+.PartialLeak {
+  background-color: orange;
+  color: white;
+}
+
+.Valid {
+  background-color: green;
+} 
+
+.hidden_table_row {
+  display:none;
+  visibility:hidden;
+}
+
+.displayed_table_row {
+  display: table-row;
+  visibility:visible;
+}
